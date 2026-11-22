@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Assess how AI contributed to a software change and create an AID badge for your README or pull request.">
+  <meta name="theme-color" content="#f7f6f9">
+  <title>AI disclosure self-assessment · AID</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./bootstrap.min.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container page-width d-flex align-items-center justify-content-between">
+      <a class="brand" href="./" aria-label="AID home">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="./icons.svg#robot"></use></svg></span>
+        AID
+      </a>
+      <a href="#scoring-guide" class="guide-link" id="guide-link">
+        <svg class="icon" aria-hidden="true"><use href="./icons.svg#book-open"></use></svg>
+        Scoring guide
+      </a>
+    </div>
+  </header>
+
+  <main class="container page-width">
+    <div class="page-intro">
+      <h1>AI disclosure self-assessment</h1>
+      <p>Describe how AI contributed to a software change and get a badge for your README or pull request.</p>
+    </div>
+
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-7">
+        <form id="assessment" class="card panel">
+          <div class="panel-heading">
+            <h2>Assess your work</h2>
+            <p>Choose one change, then work through each category. The answers determine your levels.</p>
+          </div>
+          <div class="scope-group">
+            <label class="form-label" for="scope">Scope <span class="optional">Optional for export</span></label>
+            <input class="form-control" id="scope" name="scope" type="text" maxlength="160" placeholder="e.g. PR #42 or v1.2.0" aria-describedby="scope-hint">
+            <div class="field-hint" id="scope-hint">Include a scope if you want it in the copied disclosure.</div>
+          </div>
+
+          <section class="scores-group" aria-labelledby="scores-heading">
+            <h3 id="scores-heading" class="assessment-heading">AI contribution</h3>
+            <div id="category-fields"></div>
+          </section>
+
+          <section class="review-group" aria-labelledby="review-heading">
+            <h3 id="review-heading" class="assessment-heading">Human review</h3>
+            <div id="review-field"></div>
+          </section>
+
+          <details class="assessment-details" id="disclosure-notes">
+            <summary>Add disclosure notes <span class="optional">Optional</span></summary>
+            <label for="notes" class="visually-hidden">Disclosure notes</label>
+            <textarea class="form-control" id="notes" name="notes" rows="3" maxlength="2000" placeholder="Which parts did AI contribute? What did you check or verify?" aria-describedby="notes-hint"></textarea>
+            <div class="field-hint" id="notes-hint">Notes are included when you copy Markdown.</div>
+          </details>
+        </form>
+
+        <details class="card panel rubric-panel" id="scoring-guide">
+          <summary>Scoring guide</summary>
+          <dl id="score-guide" class="score-guide"></dl>
+          <p>Use <strong>0</strong> only when you can confirm no AI use. Count a contribution in each category it affected. Choose <strong>4</strong> if substantial AI output was used largely as delivered, even when it was fully reviewed.</p>
+          <p>If every score is <strong>0</strong>, assess review of the final change itself. If an AI score is unknown, choose <strong>Full</strong> only when the review covered all in-scope work.</p>
+        </details>
+      </div>
+
+      <div class="col-lg-5 preview-column">
+        <section class="card panel preview-panel" aria-labelledby="preview-heading">
+          <div class="panel-heading preview-heading">
+            <h2 id="preview-heading" tabindex="-1">Badge preview</h2>
+            <span id="answer-count" class="answer-count">0 of 5 assessed</span>
+          </div>
+          <div class="badge-stage">
+            <img id="badge-image" height="20" src="./badges/unknown/DU-IU-TU-CU.svg" alt="Draft AID badge with unknown scores and undeclared human review">
+          </div>
+          <p class="preview-message" id="preview-message" role="status">Complete the four categories and human review to export your badge.</p>
+          <div class="export-actions d-flex flex-wrap gap-2">
+            <button class="btn btn-primary" id="copy-markdown" type="button" disabled>
+              <svg class="icon" aria-hidden="true"><use href="./icons.svg#copy"></use></svg>
+              Copy Markdown
+            </button>
+            <a class="btn btn-outline-secondary disabled" id="download-svg" aria-disabled="true">
+              <svg class="icon" aria-hidden="true"><use href="./icons.svg#download"></use></svg>
+              Download SVG
+            </a>
+          </div>
+          <details class="markdown-details" id="markdown-details" hidden>
+            <summary>View Markdown</summary>
+            <label for="markdown" class="visually-hidden">Generated Markdown</label>
+            <textarea class="form-control" id="markdown" rows="4" readonly spellcheck="false"></textarea>
+          </details>
+          <p class="feedback" id="copy-feedback" aria-live="polite" hidden></p>
+        </section>
+        <p class="preview-caption">The badge reflects your self-assessment. An unknown answer appears as <strong>?</strong>.</p>
+      </div>
+    </div>
+    <noscript><p class="alert alert-warning mt-4">Enable JavaScript to fill out the assessment and export a badge.</p></noscript>
+  </main>
+
+  <footer class="container page-width site-footer">
+    <span>Artificial Intelligence Disclosure</span>
+    <a href="https://fontawesome.com/license/free">Font Awesome icon credits</a>
+  </footer>
+
+  <template id="assessment-template">
+    <details class="assessment-step" name="assessment-step">
+      <summary class="step-summary">
+        <span class="category-icon"><svg class="icon" aria-hidden="true"><use></use></svg></span>
+        <span class="step-name"><span class="step-title"></span><span class="step-description"></span></span>
+        <span class="step-result">Not assessed</span>
+      </summary>
+      <div class="step-body">
+        <p class="step-evidence"></p>
+        <p class="review-wait field-hint" hidden>Assess all four contribution categories before answering the review questions.</p>
+        <div class="step-questions"></div>
+        <div class="step-actions" hidden>
+          <p class="step-outcome" role="status"></p>
+          <button type="button" class="btn btn-outline-secondary next-step"></button>
+        </div>
+      </div>
+    </details>
+  </template>
+
+  <template id="question-template">
+    <fieldset class="assessment-question">
+      <legend></legend>
+      <p class="question-guidance" hidden></p>
+      <div class="question-choices"></div>
+    </fieldset>
+  </template>
+
+  <template id="choice-template">
+    <label class="question-choice">
+      <input class="form-check-input" type="radio">
+      <span class="choice-content">
+        <span class="choice-heading"><span class="choice-title"></span><span class="choice-result" hidden></span></span>
+        <span class="choice-guidance" hidden></span>
+        <span class="choice-example" hidden><strong>Example</strong> <span></span></span>
+      </span>
+    </label>
+  </template>
+</body>
+</html>
