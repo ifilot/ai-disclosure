@@ -7,7 +7,7 @@
 
 AID helps software authors disclose how AI contributed to a pull request, release, or other set of changes. Its guided self-assessment produces a compact badge showing four contribution scores and the human review status.
 
-[Open the AID self-assessment](https://ifilot.github.io/ai-disclosure/)
+[![Open the AID self-assessment](docs/open-aid-assessment.svg)](https://ifilot.github.io/ai-disclosure/)
 
 **Project self-assessment**
 
