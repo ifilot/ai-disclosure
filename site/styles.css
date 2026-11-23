@@ -189,10 +189,12 @@ summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outli
 .section-lead { color: var(--bs-secondary-color); margin-bottom: 1.25rem; }
 .anatomy { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(7, auto); justify-content: start; gap: 0; overflow-x: auto; }
 .anatomy li { display: grid; grid-template-rows: auto 1fr; min-width: 0; }
-.anatomy-cell { display: flex; align-items: center; justify-content: center; gap: .45rem; height: 44px; padding: 0 .85rem; color: #fff; font-family: Verdana, "DejaVu Sans", sans-serif; font-size: 1.05rem; text-shadow: 0 1px 0 rgba(0, 0, 0, .3); border-right: 1px solid rgba(0, 0, 0, .22); }
+.anatomy-cell { display: flex; align-items: center; justify-content: center; gap: .45rem; height: 44px; padding: 0 .85rem; color: #fff; font-family: Verdana, "DejaVu Sans", sans-serif; font-size: 1.05rem; text-shadow: 0 1px 0 rgba(0, 0, 0, .3); }
+/* Dividers sit on each cell's left edge, so the caption line below continues them at exactly the same x. */
+.anatomy li + li .anatomy-cell { box-shadow: inset 1px 0 0 rgba(0, 0, 0, .25); }
 .anatomy li:first-child .anatomy-cell { border-radius: 7px 0 0 7px; }
-.anatomy li:last-child .anatomy-cell { border-radius: 0 7px 7px 0; border-right: 0; }
-.anatomy-caption { display: block; max-width: 9.5rem; padding: .6rem .5rem 0 .1rem; border-left: 2px solid #e3dce7; margin: .45rem .35rem 0 .45rem; color: var(--bs-secondary-color); font-size: .8125rem; line-height: 1.35; }
+.anatomy li:last-child .anatomy-cell { border-radius: 0 7px 7px 0; }
+.anatomy-caption { display: block; max-width: 9.5rem; padding: .6rem .6rem 0 .55rem; border-left: 1px solid #cfc3d4; margin: 0; color: var(--bs-secondary-color); font-size: .8125rem; line-height: 1.35; }
 .anatomy-caption strong { display: block; color: var(--bs-body-color); font-size: .875rem; }
 .cell-brand { background: #555; }
 .cell-D { background: #82495e; }
@@ -233,8 +235,8 @@ summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outli
   .edge-cases div { grid-template-columns: 1fr; }
   .anatomy { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; overflow: visible; }
   .anatomy li:nth-child(odd):last-child { grid-column: span 2; }
-  .anatomy .anatomy-cell { border-radius: 7px; border-right: 0; justify-content: flex-start; }
-  .anatomy-caption { max-width: none; margin-left: .2rem; }
+  .anatomy li:nth-child(n) .anatomy-cell { border-radius: 7px; box-shadow: none; justify-content: flex-start; }
+  .anatomy-caption { max-width: none; border-left: 0; padding-left: .15rem; }
   .hero { padding-top: 2.25rem; }
   .hero-badge img { height: 22px; }
   .step-summary { grid-template-columns: auto minmax(0, 1fr); }
