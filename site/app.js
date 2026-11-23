@@ -22,6 +22,9 @@ const download = document.getElementById('download-svg');
 const markdown = document.getElementById('markdown');
 const markdownDetails = document.getElementById('markdown-details');
 const copyFeedback = document.getElementById('copy-feedback');
+const mobileBadge = document.getElementById('mobile-badge');
+const mobileCount = document.getElementById('mobile-count');
+const mobilePreview = document.getElementById('mobile-preview');
 
 function cloneTemplate(id) {
   return document.getElementById(id).content.firstElementChild.cloneNode(true);
@@ -174,8 +177,10 @@ function refresh() {
   const altText = badgeAlt(scores, review);
 
   if (image.getAttribute('src') !== path) image.setAttribute('src', path);
+  if (mobileBadge.getAttribute('src') !== path) mobileBadge.setAttribute('src', path);
   image.alt = complete ? altText : `Draft preview. ${altText}`;
   progress.textContent = `${count} of ${total} assessed`;
+  mobileCount.textContent = `${count} of ${total}`;
   const nextMessage = complete ? 'Your badge is ready to copy or download.' : 'Complete the four categories and human review to export your badge.';
   if (message.textContent !== nextMessage) message.textContent = nextMessage;
   copyButton.disabled = !complete;
@@ -216,6 +221,11 @@ copyButton.addEventListener('click', async () => {
     copyFeedback.textContent = 'Markdown selected. Use your keyboard’s copy command.';
   }
 });
+
+// On narrow screens the preview sits below the form; a pinned bar shows the badge until the preview itself is in view.
+new IntersectionObserver(([entry]) => {
+  mobilePreview.classList.toggle('is-hidden', entry.isIntersecting);
+}).observe(document.querySelector('.preview-panel'));
 
 document.getElementById('js-loading').remove();
 refresh();

@@ -78,7 +78,8 @@ export function contributionQuestions(category) {
     const level = scoreLevels.find(item => item.value === value);
     return { title, result: value, badge: `${value} · ${level.label}`, guidance: guidance ?? level.guidance, example: category.examples[value] };
   };
-  const unknown = outcome('?', 'I cannot establish this');
+  // The title says it all; repeating the scale's guidance under every question only lengthens the form.
+  const unknown = outcome('?', 'I cannot establish this', '');
   const questions = [
     {
       question: category.question,

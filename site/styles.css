@@ -74,6 +74,8 @@
 .choice-result { font-size: .75rem; color: var(--accent-deep); font-weight: 650; }
 .choice-guidance, .choice-example { display: block; margin-top: .2rem; }
 .choice-guidance[hidden], .choice-example[hidden] { display: none; }
+/* Examples appear once an answer is chosen, which keeps long questions scannable. */
+.question-choice:not(:has(:checked)) .choice-example { display: none; }
 .choice-example strong { font-size: .75rem; font-weight: 650; color: var(--accent-deep); margin-right: .2rem; }
 .step-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .85rem; }
 .step-actions[hidden] { display: none; }
@@ -145,6 +147,17 @@ summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outli
 .disclosure-example p { font-size: .9375rem; line-height: 1.55; margin: 0 0 .45rem; }
 .disclosure-example p:last-child { margin-bottom: 0; }
 .about-cta { display: flex; justify-content: center; margin: 2rem 0 .5rem; }
+.mobile-preview { display: none; }
+@media (max-width: 991px) {
+  .mobile-preview { position: fixed; left: 50%; bottom: 12px; z-index: 10; display: flex; align-items: center; gap: .6rem; max-width: calc(100% - 24px); transform: translateX(-50%); padding: .5rem .7rem; border: 1px solid #d9cadf; border-radius: 999px; background: var(--surface); box-shadow: 0 6px 20px rgba(36, 30, 42, .16); color: var(--accent-deep); font-size: .8125rem; font-weight: 650; text-decoration: none; transition: opacity .2s, transform .2s; }
+  .mobile-preview img { height: 18px; max-width: 70vw; }
+  .mobile-preview span { white-space: nowrap; }
+  .mobile-preview.is-hidden { opacity: 0; pointer-events: none; transform: translate(-50%, 12px); }
+  .site-footer { padding-bottom: 5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-preview { transition: none; }
+}
 
 .eyebrow { margin: 0 0 .45rem; color: var(--accent); font-size: .8125rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .page-intro .eyebrow { margin-bottom: .35rem; }
