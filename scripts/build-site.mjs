@@ -5,15 +5,20 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   faBookOpen,
+  faCheck,
+  faCircleInfo,
   faCode,
   faCopy,
   faDownload,
+  faExclamation,
   faFileLines,
   faFlask,
   faPenRuler,
   faRobot,
   faUser,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
+import { pages, scripts, styles } from './site-files.mjs';
 
 const require = createRequire(import.meta.url);
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -23,7 +28,8 @@ const version = require('@fortawesome/free-solid-svg-icons/package.json').versio
 
 rmSync(output, { recursive: true, force: true });
 mkdirSync(output, { recursive: true });
-for (const name of ['index.html', 'styles.css', 'app.js', 'rubric.js']) {
+for (const name of [...pages, ...scripts, ...styles]) {
+  mkdirSync(dirname(join(output, name)), { recursive: true });
   copyFileSync(join(root, 'site', name), join(output, name));
 }
 
@@ -32,7 +38,7 @@ writeFileSync(join(output, 'bootstrap.min.css'), css.replace(/\/\*# sourceMappin
 copyFileSync(join(bootstrap, 'LICENSE'), join(output, 'bootstrap-license.txt'));
 writeFileSync(join(output, '.nojekyll'), '');
 
-const icons = [faBookOpen, faCode, faCopy, faDownload, faFileLines, faFlask, faPenRuler, faRobot, faUser];
+const icons = [faBookOpen, faCheck, faCircleInfo, faCode, faCopy, faDownload, faExclamation, faFileLines, faFlask, faPenRuler, faRobot, faUser, faXmark];
 const credit = `<!-- Icons by Font Awesome Free ${version} (https://fontawesome.com), CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). -->`;
 const symbols = icons.map(({ iconName, icon: [width, height, , , paths] }) => {
   const content = [paths].flat().map(path => `<path d="${path}"/>`).join('');

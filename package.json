@@ -1,5 +1,5 @@
 {
-  "name": "aid-badge",
+  "name": "colophon",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,11 +9,16 @@
   "scripts": {
     "generate:badges": "node scripts/generate-badges.mjs",
     "build": "node scripts/build-site.mjs",
-    "verify:site": "node scripts/verify-site.mjs"
+    "verify:site": "node scripts/verify-site.mjs",
+    "generate:button": "node scripts/generate-button.mjs"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "7.3.1",
     "badge-maker": "5.0.2",
     "bootstrap": "5.3.9"
+  },
+  "devDependencies": {
+    "@fontsource/inter": "5.3.0",
+    "opentype.js": "2.0.0"
   }
 }

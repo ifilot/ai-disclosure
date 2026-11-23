@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How Colophon scores AI contribution and human review: the scale, the four categories with examples, edge cases, and the scoring rules.">
+  <meta name="theme-color" content="#f7f6f9">
+  <title>Scoring guide · Colophon</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./bootstrap.min.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./guide.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container page-width header-row">
+      <a class="brand" href="./" aria-label="Colophon home">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="./icons.svg#robot"></use></svg></span>
+        Colophon
+      </a>
+      <nav class="site-tabs" aria-label="Main">
+        <a href="./assess.html"><svg class="icon" aria-hidden="true"><use href="./icons.svg#pen-ruler"></use></svg>Self-assessment</a>
+        <a href="./guide.html" aria-current="page"><svg class="icon" aria-hidden="true"><use href="./icons.svg#book-open"></use></svg>Scoring guide</a>
+        <a href="./about.html"><svg class="icon" aria-hidden="true"><use href="./icons.svg#circle-info"></use></svg>About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page-width about">
+    <div class="page-intro">
+      <p class="eyebrow">Rubric v1</p>
+      <h1>Scoring guide</h1>
+      <p>How Colophon scores AI contribution and human review. Each category below explains what it covers, what to look at, and what each score looks like in practice.</p>
+    </div>
+
+    <nav class="about-toc" aria-label="On this page">
+      <a href="#scale">Contribution scale</a>
+      <a href="#categories">Categories</a>
+      <a href="#edge-cases">Edge cases</a>
+      <a href="#review">Human review</a>
+      <a href="#rules">Scoring rules</a>
+    </nav>
+
+    <section class="card panel about-section" id="scale" aria-labelledby="scale-heading">
+      <h2 id="scale-heading">The contribution scale</h2>
+      <p>Each of the four categories gets one score for the chosen scope, such as a pull request or a release.</p>
+      <dl class="score-guide" id="scale-list"></dl>
+    </section>
+
+    <section class="about-section" id="categories" aria-labelledby="categories-heading">
+      <h2 id="categories-heading">The four categories</h2>
+      <p>Score each category separately, and count a contribution in every category it materially affected. If AI writes a function and its docstring, the function counts under Implementation and the docstring under Comments &amp; docs.</p>
+      <div class="category-list" id="category-list"></div>
+    </section>
+
+    <section class="card panel about-section" id="edge-cases" aria-labelledby="edge-heading">
+      <h2 id="edge-heading">Edge cases</h2>
+      <dl class="score-guide edge-cases">
+        <div><dt>Editor completions</dt><dd>Completions inside code you were writing are discrete pieces, usually a <strong>2</strong> under Implementation. When completions wrote whole functions or most of the logic, treat them as a substantial part of the result.</dd></div>
+        <div><dt>Spec, then agent</dt><dd>A specification you wrote is human work. If it fixed the design, AI contributed little to Design, even when an agent then wrote all the code, which is usually a <strong>4</strong> under Implementation.</dd></div>
+        <div><dt>AI code review</dt><dd>Findings from an AI reviewer count under Tests &amp; checks. They never count as human review.</dd></div>
+        <div><dt>Debugging</dt><dd>AI diagnosing a failure counts under Tests &amp; checks. The fix counts under Implementation.</dd></div>
+        <div><dt>Commit messages and PR descriptions</dt><dd>Count under Comments &amp; docs.</dd></div>
+        <div><dt>Translations and UI text</dt><dd>Documentation translations count under Comments &amp; docs. Strings shipped in the product count under Implementation.</dd></div>
+        <div><dt>Generated data</dt><dd>Test fixtures count under Tests &amp; checks. Production data and configuration count under Implementation.</dd></div>
+        <div><dt>Mechanical refactors</dt><dd>Codemods and renames done by AI count under Implementation. A large mechanical change used as delivered is a <strong>4</strong>; say in the disclosure that it was mechanical.</dd></div>
+        <div><dt>Team changes</dt><dd>Ask the contributors. If you cannot establish a category’s score, use <strong>?</strong>.</dd></div>
+      </dl>
+    </section>
+
+    <section class="card panel about-section" id="review" aria-labelledby="review-heading">
+      <h2 id="review-heading">Human review</h2>
+      <p>How much AI contributed and whether a person checked it are separate questions. Any contribution level can have <strong>Full</strong> review, and authors may review their own work as long as they deliberately check it against relevant criteria.</p>
+      <dl class="score-guide" id="review-list"></dl>
+      <p>A check means a person read and understood the contribution and verified it, for example by running the tests or comparing the docs with the code. Skimming is not a check, and an AI review on its own is not human review. Say in your disclosure whether the review was the author’s own or independent.</p>
+      <p>The last cell of the badge flags the review status: a green check for <strong>Full</strong>, an amber exclamation mark for <strong>Partial</strong>, and a red cross for <strong>None</strong> and <strong>?</strong>. Unlike the contribution scores, this marker is a deliberate warning: code that nobody checked is a risk, whoever wrote it.</p>
+    </section>
+
+    <section class="card panel about-section" id="rules" aria-labelledby="rules-heading">
+      <h2 id="rules-heading">Scoring rules</h2>
+      <ul class="disclosure-tips">
+        <li>Count every AI use you know of, including always-on editor completions, chat advice, and agents.</li>
+        <li>Use <strong>0</strong> only when you can confirm that AI was not used, and <strong>–</strong> when the scope has no work in that category. When you cannot establish a score, <strong>?</strong> is a legitimate answer.</li>
+        <li>If parts of the scope differ, score the highest level that applies to a material part, and name that part in your disclosure.</li>
+        <li>A person determines the result through material specifications given before the draft or changes made after it. Formatting, small wording fixes, and approval alone leave a substantial AI contribution at <strong>4</strong>.</li>
+        <li>Choose <strong>4</strong> if substantial AI output was used largely as delivered, even when it was fully reviewed.</li>
+        <li>If every score is <strong>0</strong> or <strong>–</strong>, assess the review of the final change itself.</li>
+        <li>If any score is unknown, choose <strong>Full</strong> only when the review covered all work in scope.</li>
+      </ul>
+      <p>The <a href="https://github.com/ifilot/ai-disclosure/blob/master/AI-DISCLOSURE.md">full rubric</a> is the same rubric in one document, with the complete decision rules. Badges link to the rubric version they were scored with, and later versions never change what a v1 badge means.</p>
+    </section>
+
+    <div class="about-cta">
+      <a class="btn btn-primary" href="./assess.html">
+        <svg class="icon" aria-hidden="true"><use href="./icons.svg#pen-ruler"></use></svg>
+        Start the self-assessment
+      </a>
+    </div>
+    <noscript><p class="alert alert-warning mt-4">Enable JavaScript to show the scale, categories, and review statuses.</p></noscript>
+  </main>
+
+  <footer class="container page-width site-footer">
+    <span>Colophon · rubric v1 · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></span>
+    <span class="footer-links">
+      <a href="./guide.html">Scoring guide</a>
+      <a href="./about.html">About</a>
+      <a href="https://github.com/ifilot/ai-disclosure/issues">Feedback</a>
+      <a href="https://github.com/ifilot/ai-disclosure">Source on GitHub</a>
+      <a href="https://fontawesome.com/license/free">Icon credits</a>
+    </span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Why Colophon exists, what it stands for, what it cannot do, and how to write a clear AI disclosure for your project or pull request.">
+  <meta name="theme-color" content="#f7f6f9">
+  <title>About · Colophon</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./bootstrap.min.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container page-width header-row">
+      <a class="brand" href="./" aria-label="Colophon home">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="./icons.svg#robot"></use></svg></span>
+        Colophon
+      </a>
+      <nav class="site-tabs" aria-label="Main">
+        <a href="./assess.html"><svg class="icon" aria-hidden="true"><use href="./icons.svg#pen-ruler"></use></svg>Self-assessment</a>
+        <a href="./guide.html"><svg class="icon" aria-hidden="true"><use href="./icons.svg#book-open"></use></svg>Scoring guide</a>
+        <a href="./about.html" aria-current="page"><svg class="icon" aria-hidden="true"><use href="./icons.svg#circle-info"></use></svg>About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page-width about">
+    <div class="page-intro">
+      <h1>Disclosure, not judgment</h1>
+      <p>AI now helps write a great deal of code. Colophon gives anyone reading that code a clear, consistent answer to a simple question: how did AI contribute, and did a person check the result?</p>
+    </div>
+
+    <nav class="about-toc" aria-label="On this page">
+      <a href="#why">Why disclose</a>
+      <a href="#stance">What Colophon stands for</a>
+      <a href="#limits">What it can’t do</a>
+      <a href="#licensing">Disclosure vs. licensing</a>
+      <a href="#badge">Read the badge</a>
+      <a href="#write-a-disclosure">Write a disclosure</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <section class="card panel about-section" id="why" aria-labelledby="why-heading">
+      <h2 id="why-heading">Why disclose AI use in code</h2>
+      <p>People read code for many reasons. A maintainer decides whether to merge a change, a reviewer looks for what might break, a student learns from an example, and a user decides whether to depend on a library. Each of them reads the code differently depending on how it came to be.</p>
+      <p>“Made with AI” says almost nothing about that. AI may have suggested an approach, written one helper function, drafted a whole feature, or produced the entire test suite. A person may have rewritten everything it produced, or accepted it after a careful review, or not checked it at all. These are very different situations, and the reader of the code rarely gets to know which one applies.</p>
+      <p>A colophon is the note at the end of a book that records how it was made. Colophon aims to make the same kind of note a normal part of sharing code. It is not tied to one tool, language, or platform. A compact badge states where AI contributed, how much of the result it shaped, and whether a person reviewed it. A short written disclosure next to the badge supplies the details.</p>
+      <p>Free text alone is hard to compare and easy to leave vague. A shared scale lets readers see at a glance what kind of change they are looking at, and the written disclosure keeps the nuance.</p>
+    </section>
+
+    <section class="about-section" id="stance" aria-labelledby="stance-heading">
+      <h2 id="stance-heading">What Colophon stands for</h2>
+      <div class="stance-grid">
+        <div class="card stance-card">
+          <h3>A score describes origin, not quality</h3>
+          <p>A <strong>4</strong> is not a warning and a <strong>0</strong> is not a merit. Well-reviewed AI code can be excellent, and hand-written code can be poor. The scores say who produced the work, not whether it is good.</p>
+        </div>
+        <div class="card stance-card">
+          <h3>Credit where it is due</h3>
+          <p>Disclosure works both ways. If AI did a remarkable job, say so. Readers learn what AI handles well, and the people who guided it get credit for that too.</p>
+        </div>
+        <div class="card stance-card">
+          <h3>Unreviewed code is a red flag</h3>
+          <p>Review is reported separately from AI use, and it is the one place Colophon does judge. Fully delegated work can earn the green check. Code nobody checked gets a red cross, even if a person wrote all of it.</p>
+        </div>
+        <div class="card stance-card">
+          <h3>Honest beats precise</h3>
+          <p>Colophon is a self-declaration, not a detection tool. When you cannot establish what happened, <strong>?</strong> is a better answer than a confident guess.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card panel about-section" id="limits" aria-labelledby="limits-heading">
+      <h2 id="limits-heading">What Colophon can’t do</h2>
+      <ul class="disclosure-tips">
+        <li><strong>It can’t verify anything.</strong> A colophon is the author’s declaration. Readers can weigh it against the written disclosure, the commit history, and review records, but no tool can confirm it.</li>
+        <li><strong>It can’t stop judgment.</strong> Some readers will distrust a <strong>4</strong> or doubt a <strong>0</strong>. Colophon makes the facts clear and consistent; how they are received is up to the reader. Where a project discourages AI, there is a pull toward under-reporting, and an honest <strong>?</strong> beats a wrong <strong>0</strong>.</li>
+        <li><strong>It doesn’t ask for your prompts.</strong> The evidence you score from, such as chats and agent logs, stays private. The disclosure states conclusions, not transcripts.</li>
+        <li><strong>It describes one scope at a time.</strong> A badge covers the scope named next to it, such as the latest release, not the whole history of a project.</li>
+      </ul>
+    </section>
+
+    <section class="card panel about-section" id="licensing" aria-labelledby="licensing-heading">
+      <h2 id="licensing-heading">Disclosure is not licensing</h2>
+      <p>A colophon describes how code was made. A license describes what others may do with it. The two answer different questions, and a Colophon badge neither grants nor restricts any rights. A project with a <strong>4</strong> in every category still needs a license, and a license says nothing about how the code was produced.</p>
+      <p>AI-generated code can raise legal questions of its own, such as who holds the copyright in AI output and whether generated code reproduces licensed material. Colophon does not answer them, and the rules differ between jurisdictions. Check your organization’s policy and the contribution guidelines of the projects you work on. Some projects restrict or refuse AI-generated contributions.</p>
+      <p>For licensing itself, these resources are a good place to start:</p>
+      <ul class="resource-list">
+        <li><a href="https://choosealicense.com/">Choose a License</a><span>A plain-language guide to picking an open-source license, maintained by GitHub.</span></li>
+        <li><a href="https://spdx.org/licenses/">SPDX License List</a><span>Standard identifiers, such as <code>MIT</code> or <code>GPL-3.0-or-later</code>, for package metadata and file headers.</span></li>
+        <li><a href="https://reuse.software/">REUSE</a><span>A specification and tool from the FSFE for declaring the copyright and license of every file in a project.</span></li>
+        <li><a href="https://opensource.org/licenses">OSI Approved Licenses</a><span>The licenses the Open Source Initiative has reviewed and approved as open source.</span></li>
+      </ul>
+      <p class="fine-print">This page is not legal advice.</p>
+    </section>
+
+    <section class="card panel about-section" id="badge" aria-labelledby="badge-heading">
+      <h2 id="badge-heading">Read the badge</h2>
+      <div class="badge-stage about-badge">
+        <img src="./badges/v1/full/D3-I4-T4-C2.svg" height="20" alt="Colophon AI disclosure, rubric v1. Design 3, Implementation 4, Tests & checks 4, Comments & docs 2. Human review Full.">
+      </div>
+      <p>Four cells score AI’s contribution to one scope, such as a pull request or a release. From left to right they cover Design, Implementation, Tests &amp; checks, and Comments &amp; docs. The person icon shows the human review status, and the final cell flags it: green for Full, amber for Partial, red for no or unknown review.</p>
+      <p>Each category is scored from <strong>0 None</strong> to <strong>4 Delegated</strong>, with <strong>?</strong> when the evidence does not settle it and <strong>–</strong> when the scope has no work in that category. The <a href="./guide.html">scoring guide</a> explains every category and score with examples, and the <a href="./">home page</a> has a labelled diagram of the badge.</p>
+    </section>
+
+    <section class="card panel about-section" id="write-a-disclosure" aria-labelledby="write-heading">
+      <h2 id="write-heading">Write a disclosure</h2>
+      <p>The badge gives the summary at a glance. A few sentences under it tell the reader what the scores refer to. Put the disclosure where readers of that scope will look: an “AI disclosure” section in the README for a project or release, or the description of a pull request. The <a href="./assess.html">self-assessment</a> fills in the template below for you.</p>
+
+      <h3>What to cover</h3>
+      <ol class="disclosure-parts">
+        <li><strong>Scope.</strong> The pull request, release, or set of changes the badge describes.</li>
+        <li><strong>What AI contributed.</strong> Name the parts: modules, functions, test files, or documents. Say whether AI advised, wrote pieces, drafted, or delivered them. Naming the tool can help readers but is optional.</li>
+        <li><strong>What people did.</strong> The decisions, specifications, rewrites, and parts written without AI.</li>
+        <li><strong>How it was checked.</strong> The checks actually performed, such as reading the diff, running the tests, or comparing the docs with the code’s behavior. Say which ones were run and which were inspection only, and whether the review was the author’s own or independent.</li>
+        <li><strong>Worth noting</strong> <span class="optional">Optional</span>. Where AI did notably well or poorly, and anything a reader of the code should keep in mind.</li>
+      </ol>
+
+      <h3>Template</h3>
+      <pre class="template"><code>## AI disclosure
+
+[![Colophon badge](&lt;badge URL&gt;)](&lt;rubric URL&gt;)
+
+**Scope:** PR #42, retry handling for the job queue.
+
+**What AI contributed.** …
+
+**What people did.** …
+
+**How it was checked.** …
+
+**Worth noting.** …</code></pre>
+      <p class="fine-print">Keep a blank line between parts. On GitHub, lines without a blank line between them run together into one paragraph.</p>
+
+      <h3>Examples</h3>
+      <figure class="disclosure-example">
+        <img src="./badges/v1/full/D3-I4-T4-C2.svg" height="20" alt="Colophon AI disclosure, rubric v1. Design 3, Implementation 4, Tests & checks 4, Comments & docs 2. Human review Full.">
+        <p><strong>Scope:</strong> release v1.2.0, all changes since v1.1.0.</p>
+        <p><strong>What AI contributed.</strong> A coding agent drafted the design for streaming large files, then implemented the new CSV importer in <code>importers/csv.py</code> and wrote its test suite and docstrings. The implementation and tests were used largely as delivered.</p>
+        <p><strong>What people did.</strong> Before implementation started, the maintainers replaced the agent’s in-memory buffering with chunked reads and specified the error-reporting format. They wrote the user guide and the changelog without AI.</p>
+        <p><strong>How it was checked.</strong> A second maintainer read the full diff, ran the test suite on Linux and Windows, and imported three real-world files of up to 2 GB. The docstrings were compared with the code.</p>
+        <p><strong>Worth noting.</strong> The agent’s tests found an encoding bug in the existing parser that had gone unnoticed for two releases.</p>
+      </figure>
+      <figure class="disclosure-example">
+        <img src="./badges/v1/full/DN-I0-T1-CN.svg" height="20" alt="Colophon AI disclosure, rubric v1. Design not applicable, Implementation 0, Tests & checks 1, Comments & docs not applicable. Human review Full.">
+        <p><strong>Scope:</strong> PR #87, fix for the missing last page in paginated results.</p>
+        <p><strong>What AI contributed.</strong> A chat assistant diagnosed why the last page was dropped. The change has no design or documentation work.</p>
+        <p><strong>What people did.</strong> The author wrote the fix and its regression test.</p>
+        <p><strong>How it was checked.</strong> The regression test failed before the fix and passes after it. A second maintainer reviewed and approved the change.</p>
+      </figure>
+
+      <h3>Tips</h3>
+      <ul class="disclosure-tips">
+        <li><strong>Be specific.</strong> “AI wrote the parser tests” helps the reader. “AI was used responsibly” does not.</li>
+        <li><strong>Report only checks you ran.</strong> Reading a diff and running the tests are both worth reporting, but say which one you did.</li>
+        <li><strong>State what you don’t know.</strong> If a contributor’s AI use is unclear, say so and use <strong>?</strong>.</li>
+        <li><strong>Keep the tone factual.</strong> No apology and no boasting. Describe what happened.</li>
+        <li><strong>Keep it current.</strong> When the scope changes, such as a new release, update the badge and the text together.</li>
+      </ul>
+    </section>
+
+    <section class="card panel about-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <dl class="faq">
+        <dt>Which scope should a badge in my README use?</dt>
+        <dd>Usually the latest release. Name the scope in the disclosure and update both when you release again. For a pull request, put the badge in its description.</dd>
+        <dt>Does editor autocomplete count?</dt>
+        <dd>Yes. Count every AI use you know of. Completions inside code you were writing are usually a <strong>2</strong>; see the <a href="./guide.html#edge-cases">edge cases</a> in the scoring guide.</dd>
+        <dt>How does this relate to commit trailers such as <code>Co-authored-by</code>?</dt>
+        <dd>Trailers record which tool or person touched a commit. A colophon summarizes how much AI shaped a whole change and whether a person checked it. The two work well together.</dd>
+        <dt>What happens when the rubric changes?</dt>
+        <dd>Each badge links to the rubric version it was scored with, and badges for that version never change. A new version gets new badge paths.</dd>
+        <dt>Is Colophon related to the AI Disclosure (AID) Framework?</dt>
+        <dd>No. Kari Weaver’s <a href="https://crln.acrl.org/index.php/crlnews/article/view/26548/34482">AID Framework</a> is a disclosure standard for research writing. Colophon covers code. An early version of this project was also called AID and was renamed to avoid confusion.</dd>
+        <dt>How can I give feedback?</dt>
+        <dd>Colophon is an open project. Suggestions, criticism, and examples from your own projects are welcome as <a href="https://github.com/ifilot/ai-disclosure/issues">GitHub issues</a>.</dd>
+      </dl>
+    </section>
+
+    <div class="about-cta">
+      <a class="btn btn-primary" href="./assess.html">
+        <svg class="icon" aria-hidden="true"><use href="./icons.svg#pen-ruler"></use></svg>
+        Start the self-assessment
+      </a>
+    </div>
+  </main>
+
+  <footer class="container page-width site-footer">
+    <span>Colophon · rubric v1 · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></span>
+    <span class="footer-links">
+      <a href="./guide.html">Scoring guide</a>
+      <a href="./about.html">About</a>
+      <a href="https://github.com/ifilot/ai-disclosure/issues">Feedback</a>
+      <a href="https://github.com/ifilot/ai-disclosure">Source on GitHub</a>
+      <a href="https://fontawesome.com/license/free">Icon credits</a>
+    </span>
+  </footer>
+</body>
+</html>

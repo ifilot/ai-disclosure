@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Assess how AI contributed to a code change and create a Colophon badge and disclosure for your README or pull request.">
+  <meta name="theme-color" content="#f7f6f9">
+  <title>Self-assessment · Colophon</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./bootstrap.min.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container page-width header-row">
+      <a class="brand" href="./" aria-label="Colophon home">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="./icons.svg#robot"></use></svg></span>
+        Colophon
+      </a>
+      <nav class="site-tabs" aria-label="Main">
+        <a href="./assess.html" aria-current="page"><svg class="icon" aria-hidden="true"><use href="./icons.svg#pen-ruler"></use></svg>Self-assessment</a>
+        <a href="./guide.html"><svg class="icon" aria-hidden="true"><use href="./icons.svg#book-open"></use></svg>Scoring guide</a>
+        <a href="./about.html"><svg class="icon" aria-hidden="true"><use href="./icons.svg#circle-info"></use></svg>About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page-width">
+    <div class="page-intro">
+      <h1>Self-assessment</h1>
+      <p>Answer a few questions about one code change. You get a badge and a short written disclosure for your README or pull request.</p>
+    </div>
+
+    <p class="alert alert-light js-loading" id="js-loading">Loading the self-assessment… If this message stays, the page was probably opened from disk. Serve it over HTTP instead, as described in the README.</p>
+
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-7">
+        <form id="assessment" class="card panel" autocomplete="off">
+          <div class="panel-heading">
+            <h2>Assess your work</h2>
+            <p>Pick one change, such as a pull request or release, then work through each category. Your answers set the scores. The <a href="./guide.html">scoring guide</a> explains each category with examples.</p>
+          </div>
+          <div class="scope-group">
+            <label class="form-label" for="scope">Scope <span class="optional">Recommended</span></label>
+            <input class="form-control" id="scope" name="scope" type="text" maxlength="160" placeholder="e.g. PR #42 or v1.2.0" aria-describedby="scope-hint">
+            <div class="field-hint" id="scope-hint">Name the change the badge describes. Readers need it to know what the scores cover.</div>
+          </div>
+
+          <section class="scores-group" aria-labelledby="scores-heading">
+            <h3 id="scores-heading" class="assessment-heading">AI contribution</h3>
+            <div id="category-fields"></div>
+          </section>
+
+          <section class="review-group" aria-labelledby="review-heading">
+            <h3 id="review-heading" class="assessment-heading">Human review</h3>
+            <div id="review-field"></div>
+          </section>
+
+          <section class="disclosure-group" aria-labelledby="disclosure-heading">
+            <h3 id="disclosure-heading" class="assessment-heading">Written disclosure <span class="optional">Recommended</span></h3>
+            <p class="field-hint">A few sentences tell readers what the scores refer to. Each part is optional, and Markdown is kept as you type it. See <a href="./about.html#write-a-disclosure">how to write a disclosure</a> for examples.</p>
+            <div class="disclosure-fields">
+              <label class="form-label" for="ai-contributed">What AI contributed</label>
+              <textarea class="form-control" id="ai-contributed" rows="2" maxlength="1000" placeholder="Name the parts, e.g. the retry module and its tests."></textarea>
+              <label class="form-label" for="people-did">What people did</label>
+              <textarea class="form-control" id="people-did" rows="2" maxlength="1000" placeholder="Decisions, rewrites, and parts written without AI."></textarea>
+              <label class="form-label" for="checked">How it was checked</label>
+              <textarea class="form-control" id="checked" rows="2" maxlength="1000" placeholder="Checks actually performed, e.g. read the diff, ran the test suite."></textarea>
+              <label class="form-label" for="worth-noting">Worth noting</label>
+              <textarea class="form-control" id="worth-noting" rows="2" maxlength="1000" placeholder="Where AI did notably well or poorly, or anything readers should know."></textarea>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="col-lg-5 preview-column">
+        <section class="card panel preview-panel" aria-labelledby="preview-heading">
+          <div class="panel-heading preview-heading">
+            <h2 id="preview-heading" tabindex="-1">Badge preview</h2>
+            <span id="answer-count" class="answer-count">0 of 5 assessed</span>
+          </div>
+          <div class="badge-stage">
+            <img id="badge-image" height="20" src="./badges/v1/unknown/DU-IU-TU-CU.svg" alt="Draft Colophon badge with unknown scores and unknown human review">
+          </div>
+          <p class="preview-message" id="preview-message" role="status">Complete the four categories and human review to export your badge.</p>
+          <div class="export-actions d-flex flex-wrap gap-2">
+            <button class="btn btn-primary" id="copy-markdown" type="button" disabled>
+              <svg class="icon" aria-hidden="true"><use href="./icons.svg#copy"></use></svg>
+              Copy Markdown
+            </button>
+            <a class="btn btn-outline-secondary disabled" id="download-svg" role="link" aria-disabled="true">
+              <svg class="icon" aria-hidden="true"><use href="./icons.svg#download"></use></svg>
+              Download SVG
+            </a>
+          </div>
+          <details class="markdown-details" id="markdown-details" hidden>
+            <summary>View Markdown</summary>
+            <label for="markdown" class="visually-hidden">Generated Markdown</label>
+            <textarea class="form-control" id="markdown" rows="8" readonly spellcheck="false"></textarea>
+          </details>
+          <p class="feedback" id="copy-feedback" aria-live="polite"></p>
+        </section>
+        <p class="preview-caption">The badge reflects your self-assessment. An unknown answer appears as <strong>?</strong>, and a category without work as <strong>–</strong>. The copied badge links to the rubric it was scored with.</p>
+      </div>
+    </div>
+    <noscript><p class="alert alert-warning mt-4">Enable JavaScript to fill out the assessment and export a badge.</p></noscript>
+  </main>
+
+  <footer class="container page-width site-footer">
+    <span>Colophon · rubric v1 · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></span>
+    <span class="footer-links">
+      <a href="./guide.html">Scoring guide</a>
+      <a href="./about.html">About</a>
+      <a href="https://github.com/ifilot/ai-disclosure/issues">Feedback</a>
+      <a href="https://github.com/ifilot/ai-disclosure">Source on GitHub</a>
+      <a href="https://fontawesome.com/license/free">Icon credits</a>
+    </span>
+  </footer>
+
+  <template id="assessment-template">
+    <details class="assessment-step" name="assessment-step">
+      <summary class="step-summary">
+        <span class="category-icon"><svg class="icon" aria-hidden="true"><use></use></svg></span>
+        <span class="step-name"><span class="step-title"></span><span class="step-description"></span></span>
+        <span class="step-result">Not assessed</span>
+      </summary>
+      <div class="step-body">
+        <p class="step-evidence"></p>
+        <p class="review-wait field-hint" hidden>Assess all four contribution categories before answering the review questions.</p>
+        <div class="step-questions"></div>
+        <div class="step-actions" hidden>
+          <p class="step-outcome"></p>
+          <button type="button" class="btn btn-outline-secondary next-step"></button>
+        </div>
+      </div>
+    </details>
+  </template>
+
+  <template id="question-template">
+    <fieldset class="assessment-question">
+      <legend></legend>
+      <p class="question-guidance" hidden></p>
+      <div class="question-choices"></div>
+    </fieldset>
+  </template>
+
+  <template id="choice-template">
+    <label class="question-choice">
+      <input class="form-check-input" type="radio">
+      <span class="choice-content">
+        <span class="choice-heading"><span class="choice-title"></span><span class="choice-result" hidden></span></span>
+        <span class="choice-guidance" hidden></span>
+        <span class="choice-example" hidden><strong>Example</strong> <span></span></span>
+      </span>
+    </label>
+  </template>
+</body>
+</html>

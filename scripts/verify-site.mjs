@@ -1,34 +1,89 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
-import { badgeFilename, reviewStatuses, scoreLevels } from '../site/rubric.js';
+import { execFileSync } from 'node:child_process';
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { badgeFilename, reviewStatuses, rubricVersion, scoreLevels } from '../site/rubric.js';
+import { pages, scripts, styles } from './site-files.mjs';
 
-const output = new URL('../dist/', import.meta.url);
-const assets = ['index.html', 'app.js', 'rubric.js', 'bootstrap.min.css', 'styles.css', 'icons.svg', 'favicon.svg'];
+const output = fileURLToPath(new URL('../dist/', import.meta.url));
+const read = path => readFileSync(join(output, path), 'utf8');
+
+// 1. Every asset exists and is non-empty.
+const assets = [...pages, ...scripts, ...styles, 'bootstrap.min.css', 'icons.svg', 'favicon.svg'];
 for (const asset of assets) {
-  assert.ok(readFileSync(new URL(asset, output)).length > 0, `${asset} is empty`);
+  assert.ok(existsSync(join(output, asset)) && read(asset).length > 0, `${asset} is missing or empty`);
 }
 
+// 2. Browser scripts at least parse as modules.
+const scratch = mkdtempSync(join(tmpdir(), 'colophon-verify-'));
+try {
+  for (const script of scripts) {
+    const copy = join(scratch, script.replace(/\.js$/, '.mjs'));
+    copyFileSync(join(output, script), copy);
+    execFileSync(process.execPath, ['--check', copy]);
+  }
+} finally {
+  rmSync(scratch, { recursive: true, force: true });
+}
+
+// 3. Internal links, image sources, anchors, and icon references resolve.
+const iconIds = new Set([...read('icons.svg').matchAll(/<symbol id="([^"]+)"/g)].map(match => match[1]));
+const idsIn = path => new Set([...read(path).matchAll(/\sid="([^"]+)"/g)].map(match => match[1]));
+const problems = [];
+for (const page of pages) {
+  const html = read(page);
+  for (const [, attribute, value] of html.matchAll(/\s(href|src)="([^"]*)"/g)) {
+    if (/^(https?:|mailto:|data:)/.test(value)) continue;
+    const [pathPart, fragment] = value.split('#');
+    let target = pathPart ? posix.normalize(posix.join(posix.dirname(page), pathPart)) : page;
+    if (target === '.' || target.endsWith('/')) target = posix.join(target, 'index.html').replace(/^\.\//, '');
+    if (!existsSync(join(output, target))) {
+      problems.push(`${page}: ${attribute}="${value}" points to a missing file`);
+      continue;
+    }
+    if (!fragment) continue;
+    if (target === 'icons.svg') {
+      if (!iconIds.has(fragment)) problems.push(`${page}: unknown icon #${fragment}`);
+    } else if (target.endsWith('.html') && !idsIn(target).has(fragment)) {
+      problems.push(`${page}: ${value} has no matching id`);
+    }
+  }
+  for (const [, version] of html.matchAll(/rubric v(\d+)/g)) {
+    if (version !== rubricVersion) problems.push(`${page}: mentions rubric v${version}, but the rubric is v${rubricVersion}`);
+  }
+}
+for (const { icon } of (await import('../site/rubric.js')).categories) {
+  if (!iconIds.has(icon)) problems.push(`rubric.js: unknown icon ${icon}`);
+}
+assert.deepEqual(problems, [], `Broken references:\n${problems.join('\n')}`);
+
+// 4. The badge catalog for this rubric version is complete and carries the right review markers.
+const values = scoreLevels.map(({ value }) => value);
 const filenames = [];
-for (const { value: design } of scoreLevels) {
-  for (const { value: implementation } of scoreLevels) {
-    for (const { value: testing } of scoreLevels) {
-      for (const { value: docs } of scoreLevels) {
-        filenames.push(badgeFilename([design, implementation, testing, docs]));
-      }
+for (const design of values) {
+  for (const implementation of values) {
+    for (const testing of values) {
+      for (const docs of values) filenames.push(badgeFilename([design, implementation, testing, docs]));
     }
   }
 }
 filenames.sort();
 
+const markers = { full: '#237342', partial: '#9a6700', none: '#a8322d', unknown: '#a8322d' };
 for (const { folder } of reviewStatuses) {
-  const directory = new URL(`badges/${folder}/`, output);
+  const directory = join(output, `badges/v${rubricVersion}`, folder);
   const items = readdirSync(directory, { withFileTypes: true });
-  assert.ok(items.every(item => item.isFile()), `Unexpected entry in badges/${folder}/`);
+  assert.ok(items.every(item => item.isFile()), `Unexpected entry in ${directory}`);
   assert.deepEqual(items.map(item => item.name).sort(), filenames, `Badge catalog mismatch in ${folder}`);
-
-  const sample = readFileSync(new URL(badgeFilename(['0', '4', '0', '4']), directory), 'utf8');
+  for (const { name } of items) {
+    const svg = readFileSync(join(directory, name), 'utf8');
+    assert.ok(!/&(?!(amp|lt|gt|quot|apos|#\d+);)/.test(svg), `Unescaped & in ${folder}/${name}: the SVG is malformed XML`);
+  }
+  const sample = readFileSync(join(directory, badgeFilename(['0', '4', '–', '?'])), 'utf8');
   assert.match(sample, /^<svg\b[^>]+height="20"/);
-  assert.equal(sample.includes('fill="#237342"'), folder === 'full');
+  assert.ok(sample.includes(`fill="${markers[folder]}"`), `Missing review marker in ${folder}`);
 }
 
-console.log(`Verified ${assets.length} site assets and ${filenames.length * reviewStatuses.length} badge SVGs in dist/.`);
+console.log(`Verified ${assets.length} site assets, their links, and ${filenames.length * reviewStatuses.length} badge SVGs for rubric v${rubricVersion}.`);

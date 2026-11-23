@@ -1,22 +1,28 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   faCheck,
   faCode,
+  faExclamation,
   faFileLines,
   faFlask,
   faPenRuler,
   faRobot,
   faUser,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { makeBadge } from 'badge-maker';
-import { badgeAlt, badgeFilename, categories, reviewStatuses, scoreLevels } from '../site/rubric.js';
+import { badgeAlt, badgeFilename, categories, reviewStatuses, rubricVersion, scoreLevels } from '../site/rubric.js';
+
+// Dependencies are pinned to exact versions, so the project's own package.json names what rendered the badges.
+const { dependencies } = createRequire(import.meta.url)('../package.json');
+const fontAwesomeVersion = dependencies['@fortawesome/free-solid-svg-icons'];
+const badgeMakerVersion = dependencies['badge-maker'];
 
 const height = 20;
-const brandWidth = 56;
 const categoryWidth = 34;
-const reviewOffset = brandWidth + categories.length * categoryWidth;
 const gray = '#555555';
 const scoreValues = scoreLevels.map(({ value }) => value);
 const categoryStyles = [
@@ -25,6 +31,19 @@ const categoryStyles = [
   { fill: '#514f84', icon: faFlask },
   { fill: '#356486', icon: faFileLines },
 ];
+
+// Every badge ends with a review marker. Missing or undeclared review is flagged the same way, so `?` is no escape from it.
+const reviewMarkers = {
+  full: { fill: '#237342', icon: faCheck },
+  partial: { fill: '#9a6700', icon: faExclamation },
+  none: { fill: '#a8322d', icon: faXmark },
+  unknown: { fill: '#a8322d', icon: faXmark },
+};
+
+// Badge text such as "Tests & checks" must be escaped, or the SVG is malformed XML and browsers refuse to render it.
+function escapeXml(text) {
+  return text.replace(/[&<>"']/g, character => `&#${character.charCodeAt(0)};`);
+}
 
 function renderIcon(definition, center, size) {
   const [width, height, , , pathData] = definition.icon;
@@ -51,7 +70,9 @@ function renderText(message) {
   };
 }
 
-const brandText = renderText('AID');
+const brandText = renderText('colophon');
+const brandWidth = 25 + brandText.width;
+const reviewOffset = brandWidth + categories.length * categoryWidth;
 const scoreText = new Map(scoreValues.map(score => [score, renderText(score)]));
 const labels = new Map(reviewStatuses.map(status => [status.label, renderText(status.label)]));
 const robot = renderIcon(faRobot, 16, 12);
@@ -62,28 +83,27 @@ function renderBadge(scores, review) {
   const text = labels.get(review.label);
   const reviewWidth = text.width + 18;
   const reviewEnd = reviewOffset + reviewWidth;
-  const hasCheck = review.folder === 'full';
-  const width = reviewEnd + (hasCheck ? height : 0);
-  const title = badgeAlt(scores, review);
+  const marker = reviewMarkers[review.folder];
+  const width = reviewEnd + height;
+  const title = escapeXml(badgeAlt(scores, review));
 
   const cells = [
     { start: 0, width: brandWidth, fill: gray },
     ...categoryStyles.map(({ fill }, index) => ({ start: brandWidth + index * categoryWidth, width: categoryWidth, fill })),
     { start: reviewOffset, width: reviewWidth, fill: gray },
+    { start: reviewEnd, width: height, fill: marker.fill },
   ];
-  if (hasCheck) cells.push({ start: reviewEnd, width: height, fill: '#237342' });
 
   const backgrounds = cells.map(cell => `    <rect x="${cell.start}" width="${cell.width}" height="${height}" fill="${cell.fill}"/>`);
   const dividers = cells.slice(1).map(({ start }) => `    <path d="M${start + 0.5} 0v${height}" stroke="#000" stroke-opacity=".22"/>`);
   const categoryLabels = scores.map((score, index) => scoreText.get(score).at(brandWidth + index * categoryWidth + 23));
-  const visibleLabels = [brandText.at(37.5), ...categoryLabels, text.at(reviewOffset + 18 + text.width / 2)];
-  const icons = [robot, ...scoreIcons, person];
-  if (hasCheck) icons.push(renderIcon(faCheck, reviewEnd + 10, 11));
+  const visibleLabels = [brandText.at(22 + brandText.width / 2), ...categoryLabels, text.at(reviewOffset + 18 + text.width / 2)];
+  const icons = [robot, ...scoreIcons, person, renderIcon(marker.icon, reviewEnd + 10, 11)];
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" role="img" aria-label="${title}">
   <title>${title}</title>
-  <!-- Icons by Font Awesome Free 7.3.1 (https://fontawesome.com), CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Recolored and scaled. -->
-  <!-- Text rendered with badge-maker 5.0.2, style flat. -->
+  <!-- Icons by Font Awesome Free ${fontAwesomeVersion} (https://fontawesome.com), CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Recolored and scaled. -->
+  <!-- Text rendered with badge-maker ${badgeMakerVersion}, style flat. -->
   <linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient>
   <clipPath id="r"><rect width="${width}" height="${height}" rx="3" fill="#fff"/></clipPath>
   <g clip-path="url(#r)" aria-hidden="true">
@@ -101,7 +121,9 @@ ${dividers.join('\n')}
 `;
 }
 
-const output = process.argv[2] ? resolve(process.argv[2]) : fileURLToPath(new URL('../badges/', import.meta.url));
+// The catalog lives under its rubric version, so badges published for one version never change meaning.
+const root = process.argv[2] ? resolve(process.argv[2]) : fileURLToPath(new URL('../badges/', import.meta.url));
+const output = join(root, `v${rubricVersion}`);
 let total = 0;
 for (const review of reviewStatuses) {
   const directory = join(output, review.folder);
@@ -119,4 +141,4 @@ for (const review of reviewStatuses) {
   }
 }
 
-console.log(`Generated ${total.toLocaleString('en-US')} badge SVGs.`);
+console.log(`Generated ${total.toLocaleString('en-US')} badge SVGs for rubric v${rubricVersion}.`);
