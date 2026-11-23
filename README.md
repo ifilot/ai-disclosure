@@ -19,6 +19,12 @@ AI now helps write a great deal of code, but "made with AI" tells the people who
 4. Fill in the written disclosure: what AI contributed, what people did, how it was checked, and anything worth noting. Each part is optional, and Markdown is kept as you type it.
 5. Select **Copy Markdown** and paste it into your README or pull request. The copied badge links to the rubric version it was scored with. The [guide to writing a disclosure](https://ifilot.github.io/ai-disclosure/about.html#write-a-disclosure) has examples and tips.
 
+To record the disclosure in your history as well, copy the **commit trailer** from the form and add it to the end of the commit message, or the squash-merge message of a pull request:
+
+```text
+Colophon: v1 D3 I4 T4 C- review=full
+```
+
 To keep a copy alongside your source, select **Download SVG**, save it as `docs/colophon.svg` in your repository, and reference it from your README.
 
 ```markdown

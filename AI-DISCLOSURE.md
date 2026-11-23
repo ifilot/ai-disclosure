@@ -97,6 +97,16 @@ Keep the scope, four scores, and human review status with a short explanation of
 >
 > **How it was checked.** The author inspected the diff, ran the existing test suite, and checked the docstrings against the code.
 
+## Commit trailer
+
+The same result can be recorded in a commit message, or the squash-merge message of a pull request, as a git trailer on the last line:
+
+```text
+Colophon: v1 D3 I4 T4 C- review=full
+```
+
+The trailer names the rubric version, then each category’s letter and score, then the review status. Scores are `0` to `4`, `?` for unknown, and `-` (an ASCII hyphen) for not applicable. The review status is `full`, `partial`, `none`, or `unknown`. The scope is the commit or pull request that carries the trailer.
+
 ## Badge catalog
 
 Each badge is a pre-generated SVG for one combination of four scores and one review status. Each visible score sits beside its category icon, and the SVG’s accessible name spells out the rubric version, the categories, and the review status.

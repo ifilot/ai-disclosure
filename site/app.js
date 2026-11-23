@@ -1,6 +1,6 @@
 import {
   badgeAlt, badgeFilename, badgePath, categories, contributionQuestions, humanReviewQuestions, reviewContext,
-  reviewStatuses, rubricVersion,
+  reviewStatuses, rubricVersion, trailer,
 } from './rubric.js';
 
 const form = document.getElementById('assessment');
@@ -22,6 +22,8 @@ const download = document.getElementById('download-svg');
 const markdown = document.getElementById('markdown');
 const markdownDetails = document.getElementById('markdown-details');
 const copyFeedback = document.getElementById('copy-feedback');
+const trailerGroup = document.getElementById('trailer-group');
+const trailerField = document.getElementById('trailer');
 const mobileBadge = document.getElementById('mobile-badge');
 const mobileCount = document.getElementById('mobile-count');
 const mobilePreview = document.getElementById('mobile-preview');
@@ -187,6 +189,7 @@ function refresh() {
   download.classList.toggle('disabled', !complete);
   download.setAttribute('aria-disabled', String(!complete));
   markdownDetails.hidden = !complete;
+  trailerGroup.hidden = !complete;
   copyFeedback.textContent = '';
 
   if (complete) {
@@ -194,10 +197,12 @@ function refresh() {
     download.download = `colophon-v${rubricVersion}-${badgeFilename(scores).slice(0, -4)}-${review.folder}.svg`;
     const badge = `[![${altText}](<${publicUrl(path)}>)](<${publicUrl(`v${rubricVersion}/`)}>)`;
     markdown.value = disclosureMarkdown(badge);
+    trailerField.value = trailer(scores, review);
   } else {
     download.removeAttribute('href');
     download.removeAttribute('download');
     markdown.value = '';
+    trailerField.value = '';
   }
 }
 
@@ -210,17 +215,20 @@ window.addEventListener('pageshow', () => {
   refresh();
 });
 
-copyButton.addEventListener('click', async () => {
+async function copy(field, label, reveal) {
   try {
-    await navigator.clipboard.writeText(markdown.value);
-    copyFeedback.textContent = 'Markdown copied.';
+    await navigator.clipboard.writeText(field.value);
+    copyFeedback.textContent = `${label} copied.`;
   } catch {
-    markdownDetails.open = true;
-    markdown.focus();
-    markdown.select();
-    copyFeedback.textContent = 'Markdown selected. Use your keyboard’s copy command.';
+    reveal?.();
+    field.focus();
+    field.select();
+    copyFeedback.textContent = `${label} selected. Use your keyboard’s copy command.`;
   }
-});
+}
+
+copyButton.addEventListener('click', () => copy(markdown, 'Markdown', () => { markdownDetails.open = true; }));
+document.getElementById('copy-trailer').addEventListener('click', () => copy(trailerField, 'Commit trailer'));
 
 // On narrow screens the preview sits below the form; a pinned bar shows the badge until the preview itself is in view.
 new IntersectionObserver(([entry]) => {

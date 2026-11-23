@@ -211,6 +211,13 @@ export function badgePath(scores, review) {
   return `badges/v${rubricVersion}/${review.folder}/${badgeFilename(scores)}`;
 }
 
+// Machine-readable form for commit messages, e.g. "Colophon: v1 D3 I4 T4 C- review=full".
+// Not applicable is written as an ASCII "-" so the line is easy to type and search for.
+export function trailer(scores, review) {
+  const codes = categories.map(({ code }, index) => code + (scores[index] === '–' ? '-' : scores[index]));
+  return `Colophon: v${rubricVersion} ${codes.join(' ')} review=${review.folder}`;
+}
+
 export function badgeAlt(scores, review) {
   const spoken = { '?': 'unknown', '–': 'not applicable' };
   const namedScores = categories.map(({ name }, index) => `${name} ${spoken[scores[index]] ?? scores[index]}`);
