@@ -50,7 +50,7 @@ document.getElementById('review-list').append(
   ...reviewStatuses.map(review => definitionRow(reviewName(review), review.guidance)),
 );
 
-// Plain-language summary, one sentence per score that occurs, from the most AI involvement down.
+// Plain-language summary: one line per badge cell, in the badge's order.
 const nouns = {
   D: 'the design',
   I: 'the implementation',
@@ -58,26 +58,31 @@ const nouns = {
   C: 'the comments & docs',
 };
 const sentences = {
-  4: list => `AI produced ${list}, and its work was used largely as delivered.`,
-  3: list => `AI drafted ${list}, and a person determined the result through material specifications or changes.`,
-  2: list => `AI contributed discrete pieces to ${list}, which people otherwise produced.`,
-  1: list => `AI was consulted on ${list}, but people produced the work.`,
-  0: list => `No AI was used for ${list}.`,
-  '?': list => `How much AI contributed to ${list} is unknown.`,
-  '–': list => `The change had no work in ${list}.`,
+  4: noun => `AI produced ${noun}, which was used largely as delivered.`,
+  3: noun => `AI drafted ${noun}, and a person determined the result through material specifications or changes.`,
+  2: noun => `AI contributed discrete pieces to ${noun}, which people otherwise produced.`,
+  1: noun => `AI was consulted on ${noun}, but people produced the work.`,
+  0: noun => `No AI was used for ${noun}.`,
+  '?': noun => `How much AI contributed to ${noun} is unknown.`,
+  '–': noun => `The change had no work in ${noun}.`,
 };
-const summaryOrder = ['4', '3', '2', '1', '0', '?', '–'];
 
-function joinList(items) {
-  if (items.length < 3) return items.join(' and ');
-  return `${items.slice(0, -1).join(', ')}, and ${items.at(-1)}`;
+function summaryLine(mark, label, text) {
+  const line = element('li');
+  mark.setAttribute('title', label);
+  line.append(mark, element('span', 'visually-hidden', `${label}: `), element('span', '', text));
+  return line;
 }
 
-function summarize(scores) {
-  return summaryOrder.flatMap(value => {
-    const named = categories.filter((_, index) => scores[index] === value).map(({ code }) => nouns[code]);
-    return named.length ? [sentences[value](joinList(named))] : [];
+function summarize(scores, review) {
+  const lines = categories.map(({ code, title, icon: name }, index) => {
+    const mark = element('span', `summary-icon cell-${code}`);
+    mark.append(icon(name));
+    return summaryLine(mark, title, sentences[scores[index]](nouns[code]));
   });
+  const mark = element('span', `summary-icon cell-${review.folder === 'unknown' ? 'none' : review.folder}`);
+  mark.append(icon(flags[review.folder].icon));
+  return [...lines, summaryLine(mark, 'Human review', reviewSentence(scores, review))];
 }
 
 function reviewSentence(scores, review) {
@@ -109,46 +114,44 @@ function scaleStrip(code, value) {
   return strip;
 }
 
+// One line per card: icon, title, and score, so the score never squeezes the description below.
+function readingHeader(mark, title, score) {
+  const header = element('div', 'reading-header');
+  header.append(mark, element('h3', '', title), score);
+  return header;
+}
+
 function categoryCard(category, value) {
   const level = levels.get(value);
   const card = element('article', `card category-card reading-card category-${category.code}`);
 
-  const header = element('div', 'category-card-header');
   const mark = element('span', 'category-icon');
   mark.append(icon(category.icon));
-  const heading = element('div', 'reading-card-title');
-  heading.append(element('h3', '', category.title), element('p', 'category-prompt', category.prompt));
-  const score = element('span', `reading-score cell-${category.code}`, scoreName(value));
-  header.append(mark, heading, score);
+  const header = readingHeader(mark, category.title, element('span', `reading-score cell-${category.code}`, scoreName(value)));
 
   const meaning = element('p', 'category-detail');
   meaning.append(element('strong', '', 'What it means '), level.guidance);
-  card.append(header, scaleStrip(category.code, value), meaning);
-
+  // Always five children, so side-by-side cards share their rows and line up (see .reading-card in styles.css).
+  const detail = element('p', 'category-detail');
   const example = category.examples[value];
-  if (example) {
-    const detail = element('p', 'category-detail');
-    detail.append(element('strong', '', 'For example '), example);
-    card.append(detail);
-  }
+  if (example) detail.append(element('strong', '', 'For example '), example);
+  card.append(header, element('p', 'category-prompt', category.prompt), scaleStrip(category.code, value), meaning, detail);
   return card;
 }
 
 function reviewCard(scores, review) {
   const card = document.getElementById('reading-review');
   const flag = flags[review.folder];
-  const header = element('div', 'category-card-header');
   const mark = element('span', `flag reading-flag cell-${review.folder === 'unknown' ? 'none' : review.folder}`);
   mark.append(icon(flag.icon));
-  const heading = element('div', 'reading-card-title');
-  heading.append(element('h3', '', 'Human review'), element('p', 'category-prompt', 'What a person checked and approved.'));
-  header.append(mark, heading, element('span', 'reading-score cell-brand', reviewName(review)));
+  const header = readingHeader(mark, 'Human review', element('span', 'reading-score cell-brand', reviewName(review)));
+  const prompt = element('p', 'category-prompt', 'What a person checked and approved.');
 
   const meaning = element('p', 'category-detail');
   meaning.append(element('strong', '', 'What it means '), reviewSentence(scores, review));
   const note = element('p', 'category-detail');
   note.append(element('strong', '', 'The flag '), flag.note);
-  card.append(header, meaning, note);
+  card.append(header, prompt, meaning, note);
 }
 
 function showBadge({ scores, review }) {
@@ -162,7 +165,7 @@ function showBadge({ scores, review }) {
   document.title = `${categories.map(({ code }, index) => code + scores[index]).join(' ')} · ${reviewName(review)} review · Colophon rubric v1`;
 
   const summary = document.getElementById('reading-summary');
-  summary.append(...[...summarize(scores), reviewSentence(scores, review)].map(sentence => element('p', '', sentence)));
+  summary.append(...summarize(scores, review));
 
   document.getElementById('reading-categories').append(
     ...categories.map((category, index) => categoryCard(category, scores[index])),

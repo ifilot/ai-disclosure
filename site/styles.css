@@ -224,13 +224,22 @@ summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outli
 
 /* Badge page: explains the badge named in a link's parameters. */
 .reading-badge { margin: 0 0 1.1rem; }
-.reading-summary p { font-size: 1.0625rem; line-height: 1.55; margin: 0 0 .4rem; }
+.reading-summary { list-style: none; padding: 0; margin: 0; display: grid; gap: .55rem; }
+.reading-summary li { display: flex; align-items: flex-start; gap: .7rem; font-size: 1.0625rem; line-height: 1.55; }
+/* The icon box is one line tall, so it sits level with the first line of its sentence. */
+.summary-icon { display: grid; place-items: center; flex: none; width: 1.65rem; height: 1.65rem; border-radius: 6px; color: #fff; font-size: .8rem; }
 .reading-note { margin: .8rem 0 0; }
-.reading-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: .85rem; margin-top: .85rem; }
-.reading-review { margin-top: .85rem; }
-.reading-card-title { flex: 1; min-width: 0; }
-.reading-score { align-self: flex-start; color: #fff; font-size: .875rem; font-weight: 700; white-space: nowrap; border-radius: 6px; padding: .3rem .6rem; }
-.reading-flag { width: 40px; height: 40px; border-radius: 10px; font-size: 1.1rem; }
+/* Each card spans five rows of the grid and shares them through subgrid, so cards side by side keep
+   their header, description, scale, meaning, and example on the same lines. */
+.reading-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); column-gap: .85rem; margin-top: .85rem; }
+.reading-card { display: grid; grid-row: span 5; grid-template-rows: subgrid; row-gap: 0; align-content: start; margin-bottom: .85rem; }
+.reading-review { display: block; }
+.reading-header { display: flex; align-items: center; gap: .8rem; margin-bottom: .7rem; }
+.reading-header h3 { flex: 1; min-width: 0; font-size: 1.05rem; font-weight: 700; margin: 0; }
+.reading-header .category-icon, .reading-flag { width: 40px; height: 40px; border-radius: 10px; font-size: 1.1rem; margin: 0; }
+.reading-score { color: #fff; font-size: .875rem; font-weight: 700; white-space: nowrap; border-radius: 6px; padding: .3rem .6rem; }
+.reading-card .category-prompt, .reading-review .category-prompt { margin: 0 0 .85rem; }
+.reading-card .category-detail:last-child { margin-bottom: 0; }
 .score-scale { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; padding: 0; margin: 0 0 .9rem; }
 .score-scale li { text-align: center; color: var(--bs-secondary-color); padding: .35rem .2rem; }
 /* The current step takes its colour from its cell-* class; the others stay neutral. */
@@ -247,13 +256,13 @@ summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outli
 .reading-actions { flex-wrap: wrap; gap: .75rem; }
 @media (max-width: 575px) {
   .category-guide div { grid-template-columns: 1fr; }
-  /* On phones the score chip moves under the title, aligned with its text. */
-  .reading-card .category-card-header, .reading-review .category-card-header { flex-wrap: wrap; }
-  .reading-card-title { flex: 1 1 calc(100% - 40px - 1.6rem); }
-  .reading-score { margin-left: calc(40px + .8rem); }
+  .reading-header { gap: .65rem; }
+  .reading-header .category-icon, .reading-flag { width: 34px; height: 34px; border-radius: 9px; font-size: 1rem; }
+  .reading-header h3 { font-size: 1rem; }
+  .reading-score { font-size: .8125rem; padding: .25rem .5rem; }
+  .score-scale-label { font-size: .625rem; }
   .reading-badge { padding-inline: .5rem; }
   .reading-badge img { width: 100%; height: auto; }
-  .score-scale-label { font-size: .625rem; }
 }
 
 @media (min-width: 992px) {
