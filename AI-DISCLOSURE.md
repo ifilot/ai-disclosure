@@ -2,7 +2,7 @@
 
 Use this rubric to disclose how generative AI contributed to a specific code change and what a person checked before accepting it. Complete it for a pull request, release, or explicitly named set of changes. Use the same scope for all four scores and for human review.
 
-This is version 1 of the rubric. Badges scored with it live under `badges/v1/` and link to `https://ifilot.github.io/ai-disclosure/v1/`. A change to what any score means gets a new version, so a v1 badge never changes meaning. The [scoring guide](https://ifilot.github.io/ai-disclosure/guide.html) and the [self-assessment](https://ifilot.github.io/ai-disclosure/assess.html) present the same rubric.
+This is version 1 of the rubric. Badges scored with it live under `badges/v1/` and link to `https://ifilot.github.io/ai-disclosure/v1/`, with parameters that name the badge, such as `?scores=D3-I4-T4-C2&review=full`, so the page can explain that badge. A change to what any score means gets a new version, so a v1 badge never changes meaning. The [scoring guide](https://ifilot.github.io/ai-disclosure/guide.html) and the [self-assessment](https://ifilot.github.io/ai-disclosure/assess.html) present the same rubric.
 
 ## 1. Describe the work and any AI use
 

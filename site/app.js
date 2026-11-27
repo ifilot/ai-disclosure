@@ -1,5 +1,5 @@
 import {
-  badgeAlt, badgeFilename, badgePath, categories, contributionQuestions, humanReviewQuestions, reviewContext,
+  badgeAlt, badgeFilename, badgePagePath, badgePath, categories, contributionQuestions, humanReviewQuestions, reviewContext,
   reviewStatuses, rubricVersion, trailer,
 } from './rubric.js';
 
@@ -195,7 +195,7 @@ function refresh() {
   if (complete) {
     download.href = path;
     download.download = `colophon-v${rubricVersion}-${badgeFilename(scores).slice(0, -4)}-${review.folder}.svg`;
-    const badge = `[![${altText}](<${publicUrl(path)}>)](<${publicUrl(`v${rubricVersion}/`)}>)`;
+    const badge = `[![${altText}](<${publicUrl(path)}>)](<${publicUrl(badgePagePath(scores, review))}>)`;
     markdown.value = disclosureMarkdown(badge);
     trailerField.value = trailer(scores, review);
   } else {

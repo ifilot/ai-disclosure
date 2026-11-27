@@ -198,17 +198,46 @@ export function humanReviewQuestions(context) {
   ];
 }
 
+// URL-safe codes for the two scores that are not digits.
 const filenameCodes = { '?': 'U', '–': 'N' };
 
-export function badgeFilename(scores) {
+// Compact form shared by badge filenames and badge page links, e.g. "D3-I4-T4-CN".
+export function badgeCode(scores) {
   return categories.map(({ code }, index) => {
     const score = scores[index];
     return code + (filenameCodes[score] ?? score);
-  }).join('-') + '.svg';
+  }).join('-');
+}
+
+export function badgeFilename(scores) {
+  return `${badgeCode(scores)}.svg`;
 }
 
 export function badgePath(scores, review) {
   return `badges/v${rubricVersion}/${review.folder}/${badgeFilename(scores)}`;
+}
+
+// Badges link to the rubric version's page, which explains the badge named in its parameters,
+// e.g. "v1/?scores=D3-I4-T4-C2&review=full". Published links must keep working, so this format never changes within a version.
+export function badgePagePath(scores, review) {
+  return `v${rubricVersion}/?scores=${badgeCode(scores)}&review=${review.folder}`;
+}
+
+// The reverse of badgePagePath's parameters: { scores, review } for a valid badge, otherwise null.
+export function parseBadgeParameters(search) {
+  const parameters = new URLSearchParams(search);
+  const review = reviewStatuses.find(status => status.folder === parameters.get('review')?.toLowerCase());
+  const parts = parameters.get('scores')?.toUpperCase().split('-') ?? [];
+  if (!review || parts.length !== categories.length) return null;
+  const decoded = Object.fromEntries(Object.entries(filenameCodes).map(([score, code]) => [code, score]));
+  const scores = [];
+  for (const [index, { code }] of categories.entries()) {
+    const part = parts[index];
+    const score = part.startsWith(code) ? (decoded[part.slice(code.length)] ?? part.slice(code.length)) : undefined;
+    if (!scoreLevels.some(level => level.value === score)) return null;
+    scores.push(score);
+  }
+  return { scores, review };
 }
 
 // Machine-readable form for commit messages, e.g. "Colophon: v1 D3 I4 T4 C- review=full".

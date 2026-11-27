@@ -3,12 +3,108 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="What a Colophon badge says: how much AI contributed to each part of a change, and whether a person reviewed it. Colophon rubric v1.">
+  <meta name="theme-color" content="#f7f6f9">
   <title>Colophon rubric v1</title>
-  <meta http-equiv="refresh" content="0; url=../guide.html">
-  <link rel="canonical" href="../guide.html">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../bootstrap.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <script type="module" src="../badge-page.js"></script>
 </head>
 <body>
-  <!-- Permanent link for rubric v1. Badges scored with v1 link here; if a later version replaces the guide, this page must keep describing v1. -->
-  <p>Colophon rubric v1 is described in the <a href="../guide.html">scoring guide</a>.</p>
+  <!--
+    Permanent page for rubric v1. Every v1 badge links here, and links from the self-assessment name the badge in
+    their parameters, e.g. ?scores=D3-I4-T4-C2&review=full, which this page explains. Without parameters it shows
+    the overview only. If a later rubric version replaces rubric.js, this page must keep describing v1.
+  -->
+  <header class="site-header">
+    <div class="container page-width header-row">
+      <a class="brand" href="../" aria-label="Colophon home">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="../icons.svg#robot"></use></svg></span>
+        Colophon
+      </a>
+      <nav class="site-tabs" aria-label="Main">
+        <a href="../assess.html"><svg class="icon" aria-hidden="true"><use href="../icons.svg#pen-ruler"></use></svg>Self-assessment</a>
+        <a href="../guide.html"><svg class="icon" aria-hidden="true"><use href="../icons.svg#book-open"></use></svg>Scoring guide</a>
+        <a href="../about.html"><svg class="icon" aria-hidden="true"><use href="../icons.svg#circle-info"></use></svg>About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page-width about">
+    <div class="page-intro">
+      <p class="eyebrow">Rubric v1</p>
+      <h1 id="page-heading">Reading a colophon</h1>
+      <p id="page-lead">A Colophon badge records how AI contributed to a change, such as a pull request or a release, and whether a person checked the result. Here is what each part means.</p>
+    </div>
+
+    <p class="alert alert-warning" id="invalid-badge" hidden>This link does not name a valid rubric v1 badge, so it cannot be explained here. The overview below shows how to read any colophon.</p>
+
+    <!-- Filled in by badge-page.js when the link names a badge. -->
+    <section class="about-section badge-reading" id="badge-reading" aria-labelledby="page-heading" hidden>
+      <div class="card panel">
+        <div class="hero-badge reading-badge"><img id="reading-badge" height="30" alt=""></div>
+        <div class="reading-summary" id="reading-summary"></div>
+        <p class="fine-print reading-note">The author declared these scores using Colophon’s self-assessment. They describe where the work came from, not whether it is good.</p>
+      </div>
+      <div class="reading-grid" id="reading-categories"></div>
+      <div class="card category-card reading-review" id="reading-review"></div>
+    </section>
+
+    <section class="about-section" id="standard" aria-labelledby="standard-heading">
+      <h2 id="standard-heading">How to read a colophon</h2>
+      <p>Four cells score how much AI contributed to one change. The last two show whether a person reviewed it.</p>
+      <ol class="anatomy">
+        <li><span class="anatomy-cell cell-brand"><svg class="icon" aria-hidden="true"><use href="../icons.svg#robot"></use></svg>colophon</span><span class="anatomy-caption"><strong>The mark</strong>Links to a page like this one.</span></li>
+        <li><span class="anatomy-cell cell-D"><svg class="icon" aria-hidden="true"><use href="../icons.svg#pen-ruler"></use></svg>3</span><span class="anatomy-caption"><strong>Design</strong>Requirements, architecture, plans.</span></li>
+        <li><span class="anatomy-cell cell-I"><svg class="icon" aria-hidden="true"><use href="../icons.svg#code"></use></svg>4</span><span class="anatomy-caption"><strong>Implementation</strong>Production code and configuration.</span></li>
+        <li><span class="anatomy-cell cell-T"><svg class="icon" aria-hidden="true"><use href="../icons.svg#flask"></use></svg>4</span><span class="anatomy-caption"><strong>Tests &amp; checks</strong>Tests, AI code review, diagnosis.</span></li>
+        <li><span class="anatomy-cell cell-C"><svg class="icon" aria-hidden="true"><use href="../icons.svg#file-lines"></use></svg>2</span><span class="anatomy-caption"><strong>Comments &amp; docs</strong>Comments, docstrings, guides.</span></li>
+        <li><span class="anatomy-cell cell-brand"><svg class="icon" aria-hidden="true"><use href="../icons.svg#user"></use></svg>Full</span><span class="anatomy-caption"><strong>Human review</strong>Full, Partial, None, or ?.</span></li>
+        <li><span class="anatomy-cell cell-full"><svg class="icon" aria-hidden="true"><use href="../icons.svg#check"></use></svg></span><span class="anatomy-caption"><strong>Review flag</strong>Green, amber, or red.</span></li>
+      </ol>
+    </section>
+
+    <section class="card panel about-section" id="scale" aria-labelledby="scale-heading">
+      <h2 id="scale-heading">The contribution scale</h2>
+      <p>Each category gets one score for the whole change. The score says who produced the work, not how good it is: a <strong>4</strong> is not a warning and a <strong>0</strong> is not a merit.</p>
+      <dl class="score-guide" id="scale-list"></dl>
+    </section>
+
+    <section class="card panel about-section" id="categories" aria-labelledby="categories-heading">
+      <h2 id="categories-heading">The four categories</h2>
+      <p>A contribution counts in every category it affected. If AI writes a function and its docstring, the function counts under Implementation and the docstring under Comments &amp; docs.</p>
+      <dl class="score-guide category-guide" id="category-overview"></dl>
+    </section>
+
+    <section class="card panel about-section" id="review" aria-labelledby="review-heading">
+      <h2 id="review-heading">Human review</h2>
+      <p>How much AI contributed and whether a person checked it are separate questions. Any score can have <strong>Full</strong> review. Unlike the scores, the review flag is a deliberate warning: code that nobody checked is a risk, whoever wrote it.</p>
+      <dl class="score-guide" id="review-list"></dl>
+    </section>
+
+    <div class="about-cta reading-actions">
+      <a class="btn btn-primary" href="../assess.html">
+        <svg class="icon" aria-hidden="true"><use href="../icons.svg#pen-ruler"></use></svg>
+        Create your own colophon
+      </a>
+      <a class="btn btn-outline-secondary" href="../guide.html">
+        <svg class="icon" aria-hidden="true"><use href="../icons.svg#book-open"></use></svg>
+        Full scoring guide
+      </a>
+    </div>
+    <noscript><p class="alert alert-warning mt-4">Enable JavaScript to see what a specific badge says, or read the <a href="../guide.html">scoring guide</a>.</p></noscript>
+  </main>
+
+  <footer class="container page-width site-footer">
+    <span>Colophon · rubric v1 · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></span>
+    <span class="footer-links">
+      <a href="../guide.html">Scoring guide</a>
+      <a href="../about.html">About</a>
+      <a href="https://github.com/ifilot/ai-disclosure/issues">Feedback</a>
+      <a href="https://github.com/ifilot/ai-disclosure">Source on GitHub</a>
+      <a href="https://fontawesome.com/license/free">Icon credits</a>
+    </span>
+  </footer>
 </body>
 </html>

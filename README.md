@@ -17,7 +17,7 @@ AI now helps write a great deal of code, but "made with AI" tells the people who
 2. Work through the four contribution categories. The questions and examples help you choose a score based on what AI contributed and who determined the final result.
 3. Answer the human review questions for the same scope.
 4. Fill in the written disclosure: what AI contributed, what people did, how it was checked, and anything worth noting. Each part is optional, and Markdown is kept as you type it.
-5. Select **Copy Markdown** and paste it into your README or pull request. The copied badge links to the rubric version it was scored with. The [guide to writing a disclosure](https://ifilot.github.io/ai-disclosure/about.html#write-a-disclosure) has examples and tips.
+5. Select **Copy Markdown** and paste it into your README or pull request. The copied badge links to a page that explains what that badge says. The [guide to writing a disclosure](https://ifilot.github.io/ai-disclosure/about.html#write-a-disclosure) has examples and tips.
 
 To record the disclosure in your history as well, copy the **commit trailer** from the form and add it to the end of the commit message, or the squash-merge message of a pull request:
 
@@ -28,7 +28,7 @@ Colophon: v1 D3 I4 T4 C- review=full
 To keep a copy alongside your source, select **Download SVG**, save it as `docs/colophon.svg` in your repository, and reference it from your README.
 
 ```markdown
-[![AI disclosure for this release](docs/colophon.svg)](https://ifilot.github.io/ai-disclosure/v1/)
+[![AI disclosure for this release](docs/colophon.svg)](https://ifilot.github.io/ai-disclosure/v1/?scores=D3-I4-T4-C2&review=full)
 ```
 
 ## Read the badge
@@ -48,7 +48,7 @@ The person icon marks human review, and the last cell flags its status. **Full**
 
 ## Rubric versions
 
-The current rubric is **v1**. Badges live under `badges/v1/` and link to `https://ifilot.github.io/ai-disclosure/v1/`. A change to what any score means gets a new version with new badge paths, so a published v1 badge never changes meaning. The version is set by `rubricVersion` in [`site/rubric.js`](site/rubric.js).
+The current rubric is **v1**. Badges live under `badges/v1/` and link to `https://ifilot.github.io/ai-disclosure/v1/`. The link's parameters name the badge, such as `?scores=D3-I4-T4-C2&review=full`, and the page explains it in plain language: what each score means, with an example, and what the review flag says. Without parameters, the page gives an overview of the rubric. A change to what any score means gets a new version with new badge paths, so a published v1 badge never changes meaning. The version is set by `rubricVersion` in [`site/rubric.js`](site/rubric.js).
 
 ## Preview the site locally
 
@@ -63,7 +63,7 @@ python3 -m http.server 8000 --directory dist
 
 Open `http://localhost:8000/`. The site must be served over HTTP; opening the files from disk does not run the form. The build puts the static site, Bootstrap, Font Awesome icons, and all **9,604 badge SVGs** in `dist/`. The form runs entirely in the browser. A local preview produces relative paths in copied Markdown.
 
-- [`site/`](site/) contains the landing page, the self-assessment form, the scoring guide, the About page, styles, and browser code. The question text and examples live in [`site/rubric.js`](site/rubric.js).
+- [`site/`](site/) contains the landing page, the self-assessment form, the scoring guide, the About page, the rubric v1 page that explains each badge (`v1/index.html`, filled in by `badge-page.js`), styles, and browser code. The question text and examples live in [`site/rubric.js`](site/rubric.js).
 - [`scripts/`](scripts/) contains the `badge-maker` generator, the static build, and its verification, which also checks every internal link, anchor, and icon reference. `npm run generate:button` regenerates the README button in `docs/`, with text outlined from the Inter font.
 
 ## Deploy to GitHub Pages
@@ -79,7 +79,7 @@ GitHub Actions generates the badge catalog during the build. To generate a stand
 
 ## AI disclosure for this repository
 
-[![Colophon AI disclosure, rubric v1. Design 3, Implementation 4, Tests & checks 4, Comments & docs 3. Human review Full.](docs/colophon-self-assessment.svg)](https://ifilot.github.io/ai-disclosure/v1/)
+[![Colophon AI disclosure, rubric v1. Design 3, Implementation 4, Tests & checks 4, Comments & docs 3. Human review Full.](docs/colophon-self-assessment.svg)](https://ifilot.github.io/ai-disclosure/v1/?scores=D3-I4-T4-C3&review=full)
 
 **Scope:** this repository, up to the current version.
 

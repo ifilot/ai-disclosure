@@ -222,6 +222,40 @@ summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outli
 .stance-teaser h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: .6rem; }
 .stance-teaser p:last-child { margin-bottom: 0; }
 
+/* Badge page: explains the badge named in a link's parameters. */
+.reading-badge { margin: 0 0 1.1rem; }
+.reading-summary p { font-size: 1.0625rem; line-height: 1.55; margin: 0 0 .4rem; }
+.reading-note { margin: .8rem 0 0; }
+.reading-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: .85rem; margin-top: .85rem; }
+.reading-review { margin-top: .85rem; }
+.reading-card-title { flex: 1; min-width: 0; }
+.reading-score { align-self: flex-start; color: #fff; font-size: .875rem; font-weight: 700; white-space: nowrap; border-radius: 6px; padding: .3rem .6rem; }
+.reading-flag { width: 40px; height: 40px; border-radius: 10px; font-size: 1.1rem; }
+.score-scale { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; padding: 0; margin: 0 0 .9rem; }
+.score-scale li { text-align: center; color: var(--bs-secondary-color); padding: .35rem .2rem; }
+/* The current step takes its colour from its cell-* class; the others stay neutral. */
+.score-scale li:not(.is-current) { background: #f2eff4; }
+.score-scale li:first-child { border-radius: 6px 0 0 6px; }
+.score-scale li:last-child { border-radius: 0 6px 6px 0; }
+.score-scale li.is-current { color: #fff; }
+.score-scale.is-off-scale li { opacity: .55; }
+.score-scale-value { display: block; font-weight: 700; font-size: .9rem; }
+.score-scale-label { display: block; font-size: .6875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.category-guide div { grid-template-columns: 12.5rem 1fr; }
+.category-term { display: flex; align-items: center; gap: .55rem; }
+.category-term .category-icon { width: 26px; height: 26px; border-radius: 7px; font-size: .8rem; margin: 0; }
+.reading-actions { flex-wrap: wrap; gap: .75rem; }
+@media (max-width: 575px) {
+  .category-guide div { grid-template-columns: 1fr; }
+  /* On phones the score chip moves under the title, aligned with its text. */
+  .reading-card .category-card-header, .reading-review .category-card-header { flex-wrap: wrap; }
+  .reading-card-title { flex: 1 1 calc(100% - 40px - 1.6rem); }
+  .reading-score { margin-left: calc(40px + .8rem); }
+  .reading-badge { padding-inline: .5rem; }
+  .reading-badge img { width: 100%; height: auto; }
+  .score-scale-label { font-size: .625rem; }
+}
+
 @media (min-width: 992px) {
   .preview-column { position: sticky; top: 1.5rem; }
 }

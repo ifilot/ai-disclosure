@@ -4,7 +4,7 @@ import { copyFileSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSyn
 import { tmpdir } from 'node:os';
 import { join, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { badgeFilename, reviewStatuses, rubricVersion, scoreLevels } from '../site/rubric.js';
+import { badgeFilename, badgePagePath, parseBadgeParameters, reviewStatuses, rubricVersion, scoreLevels } from '../site/rubric.js';
 import { pages, scripts, styles } from './site-files.mjs';
 
 const output = fileURLToPath(new URL('../dist/', import.meta.url));
@@ -86,4 +86,24 @@ for (const { folder } of reviewStatuses) {
   assert.ok(sample.includes(`fill="${markers[folder]}"`), `Missing review marker in ${folder}`);
 }
 
-console.log(`Verified ${assets.length} site assets, their links, and ${filenames.length * reviewStatuses.length} badge SVGs for rubric v${rubricVersion}.`);
+// 5. Every badge's page link points at the version page and reads back as the same badge; broken links show no badge.
+assert.ok(pages.includes(`v${rubricVersion}/index.html`), `The rubric v${rubricVersion} page is missing from site-files.mjs`);
+for (const review of reviewStatuses) {
+  for (const design of values) {
+    for (const implementation of values) {
+      for (const testing of values) {
+        for (const docs of values) {
+          const scores = [design, implementation, testing, docs];
+          const [path, search] = badgePagePath(scores, review).split('?');
+          assert.equal(path, `v${rubricVersion}/`);
+          assert.deepEqual(parseBadgeParameters(search), { scores, review }, `Badge page link does not round-trip: ${search}`);
+        }
+      }
+    }
+  }
+}
+for (const search of ['', 'scores=D3-I4-T4&review=full', 'scores=D3-I4-T4-C9&review=full', 'scores=I4-D3-T4-C2&review=full', 'scores=D3-I4-T4-C2&review=maybe', 'scores=D3-I4-T4-C2-X1&review=full']) {
+  assert.equal(parseBadgeParameters(search), null, `Invalid badge parameters accepted: ${search}`);
+}
+
+console.log(`Verified ${assets.length} site assets, their links, and ${filenames.length * reviewStatuses.length} badge SVGs and their page links for rubric v${rubricVersion}.`);
